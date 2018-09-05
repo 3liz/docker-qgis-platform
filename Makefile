@@ -60,4 +60,6 @@ push:
 	docker push $(REGISTRY_URL)/$(NAME):$(VERSION)
 	docker push $(REGISTRY_URL)/$(NAME):$(VERSION_SHORT)
 
+clean:
+	docker rmi -f $(shell docker images $(BUILDIMAGE) -q)
 

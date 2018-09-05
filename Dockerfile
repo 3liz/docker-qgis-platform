@@ -11,6 +11,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ARG qgis_repository=debian
 
 RUN export DEBIAN_FRONTEND=noninteractive \
+    && export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 \
     && dpkg-divert --local --rename --add /sbin/initctl \
     && apt-get update \
     && apt-get install -y --no-install-recommends apt-transport-https ca-certificates dirmngr gnupg2 curl \
