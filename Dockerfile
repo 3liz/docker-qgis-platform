@@ -17,16 +17,12 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get install -y --no-install-recommends apt-transport-https ca-certificates dirmngr gnupg2 curl \
     && echo "deb https://qgis.org/$qgis_repository stretch main" > /etc/apt/sources.list.d/qgis.list \
     && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CAEB3DC3BDF7FB45 \
-    && apt-get update
-
-# Install latest pip version
-RUN apt-get install -y --no-install-recommends python3-setuptools \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends python3-setuptools \
     && easy_install3 pip \
     && apt-get remove -y python3-setuptools \
-    && pip3 install setuptools
-
-# Install packages 
-RUN apt-get install -y --no-install-recommends \
+    && pip3 install setuptools wheel \
+    && apt-get install -y --no-install-recommends \
       unzip \
       gosu \
       xvfb \
