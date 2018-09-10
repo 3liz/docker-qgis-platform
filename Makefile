@@ -7,13 +7,12 @@ NAME=qgis-platform
 BUILDID=$(shell date +"%Y%m%d%H%M")
 COMMITID=$(shell git rev-parse --short HEAD)
 
-VERSION=3.2
-VERSION_SHORT=3
+VERSION:=3.2
 
 ifeq ($(QGIS_BUILD_TYPE),nightly)
 BUILD_ARGS=--build-arg qgis_repository=debian-nigthly-release
-VERSION += -nightly
-VERSION_SHORT += -nightly
+VERSION_SFX=-nightly
+VERSION += $(VERSION_SFX)
 endif
 
 VERSION_TAG=$(VERSION)
@@ -34,7 +33,6 @@ all:
 manifest:
 	echo name=$(NAME) > $(MANIFEST) && \
     echo version=$(VERSION)   >> $(MANIFEST) && \
-    echo version_short=$(VERSION_SHORT) >> $(MANIFEST) && \
     echo buildid=$(BUILDID)   >> $(MANIFEST) && \
     echo commitid=$(COMMITID) >> $(MANIFEST) && \
     echo archive=$(ARCHIVENAME) >> $(MANIFEST)
@@ -51,14 +49,12 @@ archive:
 deliver: tag push
 
 tag:
-	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):latest
+	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):latest$(VERSION_SFX)
 	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$(VERSION)
-	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$(VERSION_SHORT)
 
 push:
-	docker push $(REGISTRY_URL)/$(NAME):latest
+	docker push $(REGISTRY_URL)/$(NAME):latest$(VERSION_SFX)
 	docker push $(REGISTRY_URL)/$(NAME):$(VERSION)
-	docker push $(REGISTRY_URL)/$(NAME):$(VERSION_SHORT)
 
 clean:
 	docker rmi -f $(shell docker images $(BUILDIMAGE) -q)
