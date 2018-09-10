@@ -30,6 +30,9 @@ RUN export DEBIAN_FRONTEND=noninteractive \
       python-qgis \ 
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Use utf-8 for python 3
+ENV LC_ALL="C.UTF-8"
+
 ENV QGIS_DISABLE_MESSAGE_HOOKS=1
 ENV QGIS_NO_OVERRIDE_IMPORT=1
 
