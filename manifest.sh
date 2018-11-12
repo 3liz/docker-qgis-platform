@@ -1,7 +1,9 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
+
+from __future__ import print_function
 
 import os
-from qgis.core import Qgis
+from qgis.core import QGis
 
 def getenv( name ):
     return os.environ[name]
@@ -9,7 +11,7 @@ def getenv( name ):
 flavor = getenv( 'FLAVOR' )
 version_short = None
 
-qgis_version=Qgis.QGIS_VERSION
+qgis_version=QGis.QGIS_VERSION
 
 if flavor in ('release','ltr'):
     version = qgis_version.split('-')[0]
