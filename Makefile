@@ -83,7 +83,9 @@ push:
 	fi \
 	}
 
-clean:
+clean-all:
 	docker rmi -f $(shell docker images $(BUILDIMAGE) -q)
 
+clean:
+	docker rmi $(BUILDIMAGE)
 
