@@ -1,3 +1,4 @@
+SHELL:=bash
 #
 # Build docker image for qgis platform
 #
@@ -7,55 +8,76 @@ NAME=qgis-platform
 BUILDID=$(shell date +"%Y%m%d%H%M")
 COMMITID=$(shell git rev-parse --short HEAD)
 
-VERSION:=3.2
+# There is 5 flavors of qgis
+# see https://www.qgis.org/fr/site/forusers/alldownloads.html
+# 
+# - release
+# - nigthly-release
+# - ltr
+# - nightly-ltr
+# - nightly
 
-ifeq ($(QGIS_BUILD_TYPE),nightly)
-BUILD_ARGS=--build-arg qgis_repository=debian-nigthly-release
-VERSION_SFX=-nightly
-VERSION += $(VERSION_SFX)
+# 'release' is the default'
+FLAVOR:=release
+
+ifeq ($(FLAVOR),nightly-release)
+BUILD_ARGS=--build-arg qgis_repository=debian-nightly-release
+else ifeq ($(FLAVOR),ltr)
+BUILD_ARGS=--build-arg qgis_repository=debian-ltr
+else ifeq ($(FLAVOR),nightly-ltr)
+BUILD_ARGS=--build-arg qgis_repository=debian-nightly-ltr
+else ifeq ($(FLAVOR),nightly)
+BUILD_ARGS=--build-arg qgis_repository=debian-nightly
 endif
-
-VERSION_TAG=$(VERSION)
 
 ifdef REGISTRY_URL
 REGISTRY_PREFIX=$(REGISTRY_URL)/
 BUILD_ARGS += --build-arg REGISTRY_PREFIX=$(REGISTRY_PREFIX)
 endif
 
-BUILDIMAGE=$(NAME):$(VERSION_TAG)-$(COMMITID)
-ARCHIVENAME=$(shell echo $(NAME):$(VERSION_TAG)|tr '[:./]' '_')
+BUILDIMAGE=$(NAME):$(FLAVOR)-$(COMMITID)
 
 MANIFEST=factory.manifest
 
 all:
 	@echo "Usage: make [build|archive|deliver|clean]"
 
-manifest:
-	echo name=$(NAME) > $(MANIFEST) && \
-    echo version=$(VERSION)   >> $(MANIFEST) && \
-    echo buildid=$(BUILDID)   >> $(MANIFEST) && \
-    echo commitid=$(COMMITID) >> $(MANIFEST) && \
-    echo archive=$(ARCHIVENAME) >> $(MANIFEST)
+build: _build manifest
 
-build: manifest
+_build:
 	docker build --rm --force-rm --no-cache $(BUILD_ARGS) -t $(BUILDIMAGE) $(DOCKERFILE) .
+
+manifest:
+	docker run --rm -v $$(pwd)/manifest.sh:/manifest -e FLAVOR=$(FLAVOR) \
+		-e NAME=$(NAME) -e BUILDID=$(BUILDID) -e COMMITID=$(COMMITID) \
+		$(BUILDIMAGE)  /manifest > $(MANIFEST)
 
 test:
 	docker run --rm $(BUILDIMAGE) qgis-check-platform --verbose 
 
-archive:
-	docker save $(BUILDIMAGE) | bzip2 > $(FACTORY_ARCHIVE_PATH)/$(ARCHIVENAME).bz2
-
 deliver: tag push
 
-tag:
-	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):latest$(VERSION_SFX)
-	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$(VERSION)
+tag: 
+	@@{ \
+	set -e; \
+	source factory.manifest; \
+	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$$version; \
+	if [ ! -z $$version_short ]; then \
+		docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$$version_short; \
+	fi; \
+	}
 
 push:
-	docker push $(REGISTRY_URL)/$(NAME):latest$(VERSION_SFX)
-	docker push $(REGISTRY_URL)/$(NAME):$(VERSION)
+	@@{ \
+	set -e; \
+	source factory.manifest; \
+	docker push $(REGISTRY_PREFIX)$(NAME):$$version; \
+	if [ ! -z $$version_short ]; then \
+		docker push $(REGISTRY_PREFIX)$(NAME):$$version_short; \
+	fi \
+	}
 
 clean:
 	docker rmi -f $(shell docker images $(BUILDIMAGE) -q)
+
 
