@@ -65,6 +65,7 @@ tag:
 		echo "Flavor manifest mismatch"; \
 		exit 1; \
 	fi; \
+	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$(FLAVOR); \
 	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$$version; \
 	if [ ! -z $$version_short ]; then \
 		docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$$version_short; \
@@ -75,6 +76,7 @@ push:
 	@@{ \
 	set -e; \
 	source factory.manifest; \
+	docker push $(REGISTRY_PREFIX)$(NAME):$$flavor; \
 	docker push $(REGISTRY_PREFIX)$(NAME):$$version; \
 	if [ ! -z $$version_short ]; then \
 		docker push $(REGISTRY_PREFIX)$(NAME):$$version_short; \
