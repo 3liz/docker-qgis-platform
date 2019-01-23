@@ -29,7 +29,8 @@ RUN export DEBIAN_FRONTEND=noninteractive \
       xvfb \
       qgis-server \
       python-qgis \ 
-    && apt-get clean && rm -rf /var/lib/apt/lists/* && rm -rf /usr/share/man
+    && apt-get clean && rm -rf /var/lib/apt/lists/* && rm -rf /usr/share/man \
+    && rm -rf /root/.cache
 
 # Use utf-8 for python 3
 ENV LC_ALL="C.UTF-8"
