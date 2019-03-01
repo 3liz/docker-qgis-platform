@@ -11,9 +11,12 @@ version_short = None
 
 qgis_version=Qgis.QGIS_VERSION
 
-if flavor in ('release','ltr'):
+if flavor == 'release':
     version = qgis_version.split('-')[0]
     version_short = "{}.{}".format(*version.split('.')[0:2])
+elif flavor == 'ltr':
+    version = "{}.{}".format(*version.split('.')[0:2])+'-ltr'
+    version_short = 'ltr'
 else:
     version = flavor
 
