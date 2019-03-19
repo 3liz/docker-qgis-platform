@@ -18,7 +18,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && echo "deb https://qgis.org/$qgis_repository buster main" > /etc/apt/sources.list.d/qgis.list \
     && gpg --no-tty --keyserver keyserver.ubuntu.com --recv CAEB3DC3BDF7FB45 \
     && gpg --no-tty --export --armor CAEB3DC3BDF7FB45 | apt-key add - \
-    && apt-get -y update 
+    && apt-get -y update  \
     && apt-get install -y --no-install-recommends python3-pip python3-setuptools \
     && apt-get install -y --no-install-recommends \
       unzip \
