@@ -8,27 +8,8 @@ NAME=qgis-platform
 BUILDID=$(shell date +"%Y%m%d%H%M")
 COMMITID=$(shell git rev-parse --short HEAD)
 
-# There is 5 flavors of qgis
-# see https://www.qgis.org/fr/site/forusers/alldownloads.html
-# 
-# - release
-# - nigthly-release
-# - ltr
-# - nightly-ltr
-# - nightly
-
-# 'release' is the default'
-FLAVOR:=release
-
-ifeq ($(FLAVOR),nightly-release)
-BUILD_ARGS=--build-arg qgis_repository=debian-nightly-release
-else ifeq ($(FLAVOR),ltr)
-BUILD_ARGS=--build-arg qgis_repository=debian-ltr
-else ifeq ($(FLAVOR),nightly-ltr)
-BUILD_ARGS=--build-arg qgis_repository=debian-nightly-ltr
-else ifeq ($(FLAVOR),nightly)
-BUILD_ARGS=--build-arg qgis_repository=debian-nightly
-endif
+FLAVOR=ltr-2.18
+BUILD_ARGS=--build-arg qgis_repository=debian-$(FLAVOR)
 
 ifdef REGISTRY_URL
 REGISTRY_PREFIX=$(REGISTRY_URL)/

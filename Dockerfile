@@ -3,7 +3,7 @@ ARG REGISTRY_PREFIX=''
 
 FROM  ${REGISTRY_PREFIX}debian:stretch
 MAINTAINER David Marteau <david.marteau@3liz.com>
-LABEL Description="QGIS3 Server Framework" Vendor="3liz.org" Version="3.2"
+LABEL Description="QGIS2 Server Framework" Vendor="3liz.org"
 
 ENV DEBIAN_FRONTEND noninteractive
 
