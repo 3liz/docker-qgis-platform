@@ -1,0 +1,42 @@
+#!/bin/bash
+
+set -e
+
+# Set default variables values if not defined
+export QGIS_USER=${QGIS_USER:-qgis}
+export QGIS_HOME=${QGIS_HOME:-/srv/qgis}
+export QGIS_OPTIONS_PATH=${QGIS_PLUGINPATH:-/srv/qgis/config}
+export QGIS_PLUGINPATH=${QGIS_PLUGINPATH:-/srv/qgis/plugins}
+export QGIS_SERVER_LOG_LEVEL=${QGIS_SERVER_LOG_LEVEL:-"2"}
+export QGIS_WORKERS=${QGIS_WORKERS:-"2"}
+
+mkdir -p $QGIS_HOME
+chown -R $QGIS_USER $HOME
+#
+# Set up xvfb
+# https://www.x.org/archive/X11R7.6/doc/man/man1/Xvfb.1.xhtml
+# see https://www.x.org/archive/X11R7.6/doc/man/man1/Xserver.1.xhtml
+#
+XVFB_DEFAULT_ARGS="-screen 0 1024x768x24 -ac +extension GLX +render -noreset"
+XVFB_ARGS=${QGSRV_XVFB_ARGS:-":99 $XVFB_DEFAULT_ARGS"}
+
+# Delete any actual Xvfb lock file
+rm -rf /tmp/.X99-lock
+
+if [[ "$QGSRV_DISPLAY_XVFB" == "ON" ]]; then
+ # RUN Xvfb in the background
+ echo "Running Xvfb"
+ nohup /usr/bin/Xvfb $XVFB_ARGS &
+ export DISPLAY=":99"
+fi
+
+# Qgis need a HOME
+export HOME=$QGIS_HOME
+
+# See https://github.com/qgis/QGIS/pull/5337
+export QGIS_DISABLE_MESSAGE_HOOKS=1
+export QGIS_NO_OVERRIDE_IMPORT=1
+
+# Launch supervisor
+exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+

@@ -26,7 +26,7 @@ all:
 build: _build manifest
 
 _build:
-	docker build --rm --force-rm --no-cache $(BUILD_ARGS) -t $(BUILDIMAGE) $(DOCKERFILE) .
+	docker build --rm --cache-from=$(NAME):2-latest $(BUILD_ARGS) -t $(BUILDIMAGE) -t $(NAME):2-latest $(DOCKERFILE) .
 
 manifest:
 	docker run --rm -v $$(pwd)/manifest.sh:/manifest -e FLAVOR=$(FLAVOR) \

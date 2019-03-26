@@ -9,6 +9,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Use debian-nightly-release for nightly next release version
 ARG qgis_repository=debian
+ARG QGIS_UID=10001
 
 RUN export DEBIAN_FRONTEND=noninteractive \
     && export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 \
@@ -19,16 +20,13 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && gpg --no-tty --keyserver keyserver.ubuntu.com --recv CAEB3DC3BDF7FB45 \
     && gpg --no-tty --export --armor CAEB3DC3BDF7FB45 | apt-key add - \
     && apt-get -y update \
-    && apt-get install -y --no-install-recommends python3-setuptools \
-    && easy_install3 pip \
-    && apt-get remove -y python3-setuptools \
-    && pip3 install setuptools wheel \
     && apt-get install -y --no-install-recommends \
       unzip \
       gosu \
       xvfb \
       qgis-server \
-      python-qgis \ 
+      python-qgis \
+      supervisor \
     && apt-get clean && rm -rf /var/lib/apt/lists/* && rm -rf /usr/share/man
 
 # Use utf-8 for python 3
@@ -37,5 +35,10 @@ ENV LC_ALL="C.UTF-8"
 ENV QGIS_DISABLE_MESSAGE_HOOKS=1
 ENV QGIS_NO_OVERRIDE_IMPORT=1
 
-COPY qgis-check-platform /usr/local/bin/
+RUN useradd --uid=${QGIS_UID} --no-create-home qgis
+
+COPY run-qgis-server /usr/local/bin/
+
+# Supervisor config
+COPY supervisor/ /etc/supervisor/
 
