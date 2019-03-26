@@ -42,3 +42,5 @@ COPY run-qgis-server /usr/local/bin/
 # Supervisor config
 COPY supervisor/ /etc/supervisor/
 
+EXPOSE 7000/tcp
+

@@ -5,11 +5,11 @@ set -e
 # Set default variables values if not defined
 export QGIS_USER=${QGIS_USER:-qgis}
 export QGIS_HOME=${QGIS_HOME:-/srv/qgis}
-export QGIS_OPTIONS_PATH=${QGIS_PLUGINPATH:-/srv/qgis/config}
-export QGIS_PLUGINPATH=${QGIS_PLUGINPATH:-/srv/qgis/plugins}
+export QGIS_OPTIONS_PATH=${QGIS_PLUGINPATH:-$QGIS_HOME/config}
+export QGIS_PLUGINPATH=${QGIS_PLUGINPATH:-$QGIS_HOME/plugins}
 export QGIS_SERVER_LOG_LEVEL=${QGIS_SERVER_LOG_LEVEL:-"2"}
 export QGIS_WORKERS=${QGIS_WORKERS:-"2"}
-export QGIS_SERVER_LOG_FILE=${QGIS_SERVER_LOG_FILE:-/srv/qgis/qgis.log}
+export QGIS_SERVER_LOG_FILE=${QGIS_SERVER_LOG_FILE:-$QGIS_HOME/qgis.log}
 
 mkdir -p $QGIS_HOME
 chown -R $QGIS_USER $HOME
