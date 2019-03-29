@@ -24,8 +24,9 @@ RUN export DEBIAN_FRONTEND=noninteractive \
       unzip \
       gosu \
       xvfb \
+      python3-qgis \
+      qgis-providers \
       qgis-server \
-      python-qgis \ 
     && apt-get clean && rm -rf /var/lib/apt/lists/* && rm -rf /usr/share/man \
     && rm -rf /root/.cache
 
