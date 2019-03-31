@@ -20,6 +20,7 @@ COMMITID=$(shell git rev-parse --short HEAD)
 # 'release' is the default'
 FLAVOR:=release
 
+
 ifeq ($(FLAVOR),nightly-release)
 BUILD_ARGS=--build-arg qgis_repository=debian-nightly-release
 else ifeq ($(FLAVOR),ltr)
@@ -28,6 +29,8 @@ else ifeq ($(FLAVOR),nightly-ltr)
 BUILD_ARGS=--build-arg qgis_repository=debian-nightly-ltr
 else ifeq ($(FLAVOR),nightly)
 BUILD_ARGS=--build-arg qgis_repository=debian-nightly
+else ifneq ($(FLAVOR),release)
+$(error unsupported FLAVOR)
 endif
 
 ifdef REGISTRY_URL
