@@ -40,6 +40,8 @@ endif
 
 BUILDIMAGE=$(NAME):$(FLAVOR)-$(COMMITID)
 
+TEST_FLAVOR:=$(FLAVOR)-$(COMMITID)
+
 MANIFEST=factory.manifest
 
 all:
@@ -55,8 +57,21 @@ manifest:
 		-e NAME=$(NAME) -e BUILDID=$(BUILDID) -e COMMITID=$(COMMITID) \
 		$(BUILDIMAGE)  /manifest > $(MANIFEST)
 
+LOCAL_HOME ?= $(shell pwd)
+
+BECOME_USER:=$(shell id -u)
+
 test:
-	docker run --rm $(BUILDIMAGE) qgis-check-platform --verbose 
+	mkdir -p $(shell pwd)/.local $(LOCAL_HOME)/.cache
+	docker run --rm --name qgis-py-server-test-$(COMMITID) -w /src \
+		-u $(BECOME_USER) \
+		-v $(shell pwd):/src \
+		-v $(shell pwd)/.local:/.local \
+		-v $(LOCAL_HOME)/.cache:/.cache \
+		-e PIP_CACHE_DIR=/.cache \
+		-e PYTEST_ADDOPTS="$(PYTEST_ADDOPTS)" \
+		$(NAME):$(TEST_FLAVOR) ./tests/run-tests.sh
+
 
 deliver: tag push
 
