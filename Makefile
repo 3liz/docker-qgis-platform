@@ -63,7 +63,7 @@ BECOME_USER:=$(shell id -u)
 
 test:
 	mkdir -p $(shell pwd)/.local $(LOCAL_HOME)/.cache
-	docker run --rm --name qgis-py-server-test-$(COMMITID) -w /src \
+	docker run --rm --name qgis-platform-test-$(FLAVOR)-$(COMMITID) -w /src \
 		-u $(BECOME_USER) \
 		-v $(shell pwd):/src \
 		-v $(shell pwd)/.local:/.local \
