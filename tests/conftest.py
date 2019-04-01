@@ -30,6 +30,7 @@ def pytest_sessionstart(session) -> None:
     global qgis_application
     os.environ['QT_QPA_PLATFORM'] = 'offscreen'
     qgis_application = QgsApplication([], False)
+    qgis_application.setPrefixPath('/usr', True)
     qgis_application.initQgis()
 
     # Install logger hook
