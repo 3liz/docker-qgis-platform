@@ -30,6 +30,8 @@ RUN export DEBIAN_FRONTEND=noninteractive \
       python3-qgis \
       qgis-providers \
       qgis-server \
+      python3-shapely \
+      python3-psutil \
     && apt-get clean && rm -rf /var/lib/apt/lists/* && rm -rf /usr/share/man \
     && rm -rf /root/.cache
 
