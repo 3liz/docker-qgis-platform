@@ -19,7 +19,10 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && gpg --no-tty --keyserver keyserver.ubuntu.com --recv CAEB3DC3BDF7FB45 \
     && gpg --no-tty --export --armor CAEB3DC3BDF7FB45 | apt-key add - \
     && apt-get -y update  \
-    && apt-get install -y --no-install-recommends python3-pip python3-setuptools python3-wheel \
+    && apt-get install -y --no-install-recommends python3-setuptools \
+    && python3 -m easy_install pip \
+    && apt-get remove -y python3-setuptools \
+    && pip3 install setuptools wheel \
     && apt-get install -y --no-install-recommends \
       unzip \
       gosu \
