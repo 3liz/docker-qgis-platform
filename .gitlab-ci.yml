@@ -1,0 +1,49 @@
+stages:
+    - build
+    - deploy
+
+.only_changes: &changes_def
+    changes:
+      - Dockerfile
+      - Makefile
+      - tests/**/*   
+
+build:ltr:
+  stage: build
+  variables:
+    QGIS_FLAVOR: ltr
+  script:
+    - make build test deliver clean FLAVOR=$QGIS_FLAVOR
+    - $FACTORY_SCRIPTS/trigger-ci $DOCKER_SERVER_ID $DOCKER_SERVER_TOKEN master -F "variables[QGIS_FLAVOR]=$QGIS_FLAVOR"
+    - $FACTORY_SCRIPTS/trigger-ci $DOCKER_WPS_ID $DOCKER_WPS_TOKEN master -F "variables[QGIS_FLAVOR]=$QGIS_FLAVOR"
+    - $FACTORY_SCRIPTS/push-to-docker-hub.sh
+  environment:
+    name: snap
+  artifacts:
+    paths:
+      - factory.manifest
+  only:
+    <<: *changes_def
+  except:
+    refs:
+      - schedules
+  tags:
+    - infrav3
+
+build:nightly-ltr:
+  stage: build
+  variables:
+    QGIS_FLAVOR: nightly-ltr
+  script:
+    - make build test deliver clean FLAVOR=$QGIS_FLAVOR
+    - $FACTORY_SCRIPTS/push-to-docker-hub.sh
+  environment:
+    name: snap
+  only:
+    <<: *changes_def
+    refs:
+      - schedules
+  tags:
+    - infrav3
+
+

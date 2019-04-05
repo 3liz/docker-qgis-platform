@@ -17,8 +17,8 @@ COMMITID=$(shell git rev-parse --short HEAD)
 # - nightly-ltr
 # - nightly
 
-# 'release' is the default'
-FLAVOR:=release
+# 'ltr' is the default'
+FLAVOR:=ltr
 
 
 ifeq ($(FLAVOR),nightly-release)
