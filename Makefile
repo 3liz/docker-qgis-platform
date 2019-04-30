@@ -1,6 +1,7 @@
 SHELL:=bash
 #
 # Build docker image for qgis platform
+# $date: 2019-04-30
 #
 
 NAME=qgis-platform
