@@ -3,7 +3,7 @@ ARG REGISTRY_PREFIX=''
 
 FROM  ${REGISTRY_PREFIX}debian:stretch
 MAINTAINER David Marteau <david.marteau@3liz.com>
-LABEL Description="QGIS3 Server Framework" Vendor="3liz.org" Version="3.2"
+LABEL Description="QGIS3 Server Framework" Vendor="3liz.org"
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -34,6 +34,10 @@ RUN export DEBIAN_FRONTEND=noninteractive \
       python3-psutil \
     && apt-get clean && rm -rf /var/lib/apt/lists/* && rm -rf /usr/share/man \
     && rm -rf /root/.cache
+
+# Backport 3.6 processing scripts
+COPY script-backports /script-backports 
+RUN cd /script-backports && ./backport-scripts.sh 
 
 # Use utf-8 for python 3
 ENV LC_ALL="C.UTF-8"
