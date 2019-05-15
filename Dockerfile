@@ -27,6 +27,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
       unzip \
       gosu \
       xvfb \
+      python3-psutil \
       python3-qgis \
       qgis-providers \
       qgis-server \
