@@ -62,6 +62,8 @@ LOCAL_HOME ?= $(shell pwd)
 
 BECOME_USER:=$(shell id -u)
 
+QGIS_DEBUG:=0
+
 test:
 	mkdir -p $(shell pwd)/.local $(LOCAL_HOME)/.cache
 	docker run --rm --name qgis-platform-test-$(FLAVOR)-$(COMMITID) -w /src \
@@ -71,6 +73,8 @@ test:
 		-v $(LOCAL_HOME)/.cache:/.cache \
 		-e PIP_CACHE_DIR=/.cache \
 		-e PYTEST_ADDOPTS="$(PYTEST_ADDOPTS)" \
+		-e QGIS_OPTIONS_PATH=/src/tests/qgis \
+		-e QGIS_DEBUG=$(QGIS_DEBUG) \
 		$(NAME):$(TEST_FLAVOR) ./tests/run-tests.sh
 
 

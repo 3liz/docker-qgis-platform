@@ -17,5 +17,5 @@ export QGIS_NO_OVERRIDE_IMPORT=1
 
 cd tests
 
-py.test -v $@
+pytest -s -v  $@
 

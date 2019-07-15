@@ -33,8 +33,11 @@ def pytest_sessionstart(session) -> None:
     qgis_application.setPrefixPath('/usr', True)
     qgis_application.initQgis()
 
+    verbose = os.getenv('QGIS_DEBUG') == '1'
+    if verbose:
+        os.environ['QGIS_SERVER_LOG_LEVEL'] = '0'
     # Install logger hook
-    install_logger_hook()
+    install_logger_hook(verbose=verbose)
 
 
 def pytest_sessionfinish(session, exitstatus) -> None:

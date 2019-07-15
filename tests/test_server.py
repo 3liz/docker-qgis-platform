@@ -1,4 +1,5 @@
 
+from qgis.core import QgsSettings
 from qgis.server import QgsServiceRegistry
 
 def test_services_loaded(client) -> None:
@@ -22,4 +23,16 @@ def test_get_capabilities(client) -> None:
     elem = rv.xpath(".//wms:Layer")
     assert isinstance(elem,list)
     assert len(elem) > 1
+
+def test_settings(client) -> None:
+    """ Test thas settings are read
+    """
+
+    settings = QgsSettings()    
+    
+    val = settings.value('test/foobar')
+    assert val == '42'
+
+
+
 
