@@ -1,5 +1,8 @@
 
+from qgis.PyQt.QtNetwork import QNetworkProxy
+
 from qgis.core import QgsSettings
+from qgis.core import QgsNetworkAccessManager
 from qgis.server import QgsServiceRegistry
 
 def test_services_loaded(client) -> None:
@@ -27,12 +30,25 @@ def test_get_capabilities(client) -> None:
 def test_settings(client) -> None:
     """ Test thas settings are read
     """
-
     settings = QgsSettings()    
-    
     val = settings.value('test/foobar')
     assert val == '42'
 
+def test_proxy(client) -> None:
+    """ Test that requests goes 
+        throught proxy
+    """
+    settings = QgsSettings()
+    assert settings.value('proxy/proxyEnabled') == 'true'
+    assert settings.value('proxy/proxyHost') == 'proxy.whatever.com'
+    assert settings.value('proxy/proxyType') == 'HttpProxy'
+
+    nam = QgsNetworkAccessManager.instance() 
+    nam.setupDefaultProxyAndCache()
+
+    default_proxy = nam.fallbackProxy()
+    assert default_proxy.hostName() == 'proxy.whatever.com'
+    assert default_proxy.type()     == QNetworkProxy.HttpProxy
 
 
 
