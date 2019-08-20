@@ -16,8 +16,8 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get install -y --no-install-recommends apt-transport-https ca-certificates dirmngr gnupg2 \
     && echo "deb https://qgis.org/$qgis_repository buster main" > /etc/apt/sources.list.d/qgis.list \
-    && gpg --no-tty --keyserver keyserver.ubuntu.com --recv CAEB3DC3BDF7FB45 \
-    && gpg --no-tty --export --armor CAEB3DC3BDF7FB45 | apt-key add - \
+    && gpg --no-tty --keyserver keyserver.ubuntu.com --recv 51F523511C7028C3 \
+    && gpg --no-tty --export --armor 51F523511C7028C3 | apt-key add - \
     && apt-get -y update  \
     && apt-get install -y --no-install-recommends python3-setuptools \
     && python3 -m easy_install pip \
