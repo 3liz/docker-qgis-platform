@@ -8,10 +8,18 @@ stages:
       - Makefile
       - tests/**/*   
 
-build:release:
-  stage: build
-  variables:
+# =====================
+# Variables may be:
+# - release (buster only)
+# - nightly-release (buster only)
+# - ltr
+# - nightly-ltr
+# ======================
+variables:
     QGIS_FLAVOR: release
+
+build:
+  stage: build
   script:
     - make build test deliver clean FLAVOR=$QGIS_FLAVOR
     - $FACTORY_SCRIPTS/trigger-ci $DOCKER_SERVER_ID $DOCKER_SERVER_TOKEN master -F "variables[QGIS_FLAVOR]=$QGIS_FLAVOR"
@@ -22,22 +30,6 @@ build:release:
   artifacts:
     paths:
       - factory.manifest
-  only:
-    <<: *changes_def
-    refs:
-      - schedules
-  tags:
-    - infrav3
-
-build:nightly-release:
-  stage: build
-  variables:
-    QGIS_FLAVOR: nightly-release
-  script:
-    - make build test deliver clean FLAVOR=$QGIS_FLAVOR
-    - $FACTORY_SCRIPTS/push-to-docker-hub.sh
-  environment:
-    name: snap
   only:
     <<: *changes_def
     refs:
