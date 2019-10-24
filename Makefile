@@ -107,7 +107,7 @@ push:
 	}
 
 clean-all:
-	docker rmi -f $(shell docker images $(BUILDIMAGE) -q)
+	docker rmi -f $(shell docker images $(BUILDIMAGE) -q)||true
 
 clean:
 	docker rmi $(BUILDIMAGE)
