@@ -23,6 +23,6 @@ if version_short:
     print('version_short=%s' % version_short)
 print("buildid=%s"  % getenv('BUILDID')) 
 print("commitid=%s" % getenv('COMMITID')) 
-print("qgis_version=%s" % qgis_version)
+print("qgis_version=\"%s\"" % qgis_version)
 print("flavor=%s" % flavor)
 
