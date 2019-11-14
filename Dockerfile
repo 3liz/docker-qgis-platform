@@ -37,6 +37,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && rm -rf /root/.cache
 
 # Backport 3.6 processing scripts
+# XXX To be removed when ltr switch to 3.6
 COPY script-backports /script-backports 
 RUN cd /script-backports && ./backport-scripts.sh 
 
