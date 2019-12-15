@@ -1,6 +1,6 @@
 stages:
-    - build
-    - deploy
+  - build
+  - deploy
 
 .only_changes: &changes_def
     changes:
@@ -15,15 +15,11 @@ stages:
 # - ltr 
 # - nightly-ltr 
 # ====================== 
-variables:     
-    QGIS_FLAVOR: ltr
 
-build:
+.build:
   stage: build
   script:
     - make build test deliver clean FLAVOR=$QGIS_FLAVOR
-    - $FACTORY_SCRIPTS/trigger-ci $DOCKER_SERVER_ID $DOCKER_SERVER_TOKEN master -F "variables[QGIS_FLAVOR]=$QGIS_FLAVOR"
-    - $FACTORY_SCRIPTS/trigger-ci $DOCKER_WPS_ID $DOCKER_WPS_TOKEN master -F "variables[QGIS_FLAVOR]=$QGIS_FLAVOR"
     - $FACTORY_SCRIPTS/push-to-docker-hub.sh
   environment:
     name: snap
@@ -36,4 +32,29 @@ build:
       - schedules
   tags:
     - infrav3
+
+build:ltr:
+  extends: .build
+  variables:
+    QGIS_FLAVOR: ltr
+  only:
+    variables:
+      - $BUILDTYPE== "releases"
+
+build:nightly-ltr:
+  extends: .build
+  variables:
+    QGIS_FLAVOR: nightly-ltr
+  only:
+    variables:
+      - $BUILDTYPE== "nightlies"
+
+deploy:
+  stage: deploy
+  script:
+    - $FACTORY_SCRIPTS/trigger-ci $PY_QGIS_SERVER_ID $PY_QGIS_SERVER_TOKEN master
+    - $FACTORY_SCRIPTS/trigger-ci $PY_QGIS_WPS_ID $PY_QGIS_WPS_TOKEN master
+  only:
+    variables:
+        - $BUILDTYPE== "releases"
 
