@@ -33,21 +33,21 @@ stages:
   tags:
     - infrav3
 
-build:ltr:
+build:release:
   extends: .build
   variables:
     QGIS_FLAVOR: release
   only:
     variables:
-      - $BUILDTYPE== "releases"
+      - $BUILDTYPE == "releases"
 
-build:nightly-ltr:
+build:nightly-release:
   extends: .build
   variables:
     QGIS_FLAVOR: nightly-release
   only:
     variables:
-      - $BUILDTYPE== "nightlies"
+      - $BUILDTYPE == "nightlies"
 
 # XXX Do no trigger jobs in this branch because triggers
 # occurs already in the master branch
