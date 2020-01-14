@@ -69,6 +69,8 @@ test:
 		-v $(LOCAL_HOME)/.cache:/.cache \
 		-e PIP_CACHE_DIR=/.cache \
 		-e PYTEST_ADDOPTS="$(PYTEST_ADDOPTS)" \
+		-e QGIS_OPTIONS_PATH=/src/tests/qgis \
+		-e QGIS_DEBUG=$(QGIS_DEBUG) \
 		$(NAME):$(TEST_FLAVOR) ./tests/run-tests.sh
 
 
