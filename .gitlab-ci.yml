@@ -73,4 +73,7 @@ deploy:
   only:
     variables:
       - $BUILDTYPE== "releases"
+  tags:
+    - infrav3
+
 
