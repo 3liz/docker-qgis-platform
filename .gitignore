@@ -3,6 +3,8 @@
 __output__
 __pycache__
 
+.ipython
+.bash_history
 .local
 .cache
 factory.manifest

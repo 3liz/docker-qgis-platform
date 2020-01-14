@@ -41,5 +41,10 @@ ENV LC_ALL="C.UTF-8"
 ENV QGIS_DISABLE_MESSAGE_HOOKS=1
 ENV QGIS_NO_OVERRIDE_IMPORT=1
 
+# Backport 3.6 processing scripts
+# XXX To be removed when ltr switch to 3.6
+COPY script-backports /script-backports 
+RUN cd /script-backports && ./backport-scripts.sh 
+
 COPY qgis-check-platform /usr/local/bin/
 

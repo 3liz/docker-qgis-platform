@@ -10,8 +10,8 @@ stages:
 
 # ===================== 
 # Variables may be: 
-# - release (buster only) 
-# - nightly-release (buster only) 
+# - release
+# - nightly-release
 # - ltr 
 # - nightly-ltr 
 # ====================== 
@@ -33,6 +33,14 @@ stages:
   tags:
     - infrav3
 
+build:ltr:
+  extends: .build
+  variables:
+    QGIS_FLAVOR: ltr
+  only:
+    variables:
+      - $BUILDTYPE== "releases"
+
 build:release:
   extends: .build
   variables:
@@ -40,6 +48,14 @@ build:release:
   only:
     variables:
       - $BUILDTYPE == "releases"
+
+build:nightly-ltr:
+  extends: .build
+  variables:
+    QGIS_FLAVOR: nightly-ltr
+  only:
+    variables:
+      - $BUILDTYPE== "nightlies"
 
 build:nightly-release:
   extends: .build
@@ -49,12 +65,12 @@ build:nightly-release:
     variables:
       - $BUILDTYPE == "nightlies"
 
-# XXX Do no trigger jobs in this branch because triggers
-# occurs already in the master branch
-#  script:
-#    - $FACTORY_SCRIPTS/trigger-ci $PY_QGIS_SERVER_ID $PY_QGIS_SERVER_TOKEN master
-#    - $FACTORY_SCRIPTS/trigger-ci $PY_QGIS_WPS_ID $PY_QGIS_WPS_TOKEN master
-#  only:
-#    variables:
-#        - $BUILDTYPE== "releases"
+deploy:
+  stage: deploy
+  script:
+    - $FACTORY_SCRIPTS/trigger-ci $PY_QGIS_SERVER_ID $PY_QGIS_SERVER_TOKEN master
+    - $FACTORY_SCRIPTS/trigger-ci $PY_QGIS_WPS_ID $PY_QGIS_WPS_TOKEN master
+  only:
+    variables:
+      - $BUILDTYPE== "releases"
 
