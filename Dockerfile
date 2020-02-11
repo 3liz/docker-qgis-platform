@@ -3,7 +3,7 @@ ARG REGISTRY_PREFIX=''
 
 FROM  ${REGISTRY_PREFIX}debian:buster
 MAINTAINER David Marteau <david.marteau@3liz.com>
-LABEL Description="QGIS3 Server Framework" Vendor="3liz.org"
+LABEL Description="QGIS3 Server Framework" Vendor="3liz.org" Version="20.02.1"
 
 ENV DEBIAN_FRONTEND noninteractive
 
