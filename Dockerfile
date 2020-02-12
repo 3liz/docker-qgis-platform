@@ -26,6 +26,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get install -y --no-install-recommends \
       unzip \
       gosu \
+      iputils-ping \
       xvfb \
       libgl1-mesa-dri \
       python3-psutil \
