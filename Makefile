@@ -76,6 +76,12 @@ test:
 
 deliver: tag push
 
+ifndef REGISTRY_PREFIX
+REGISTRY_TAG_PREFIX:=3liz/
+else
+REGISTRY_TAG_PREFIX:=$(REGISTRY_PREFIX)
+endif
+
 tag: 
 	@@{ \
 	set -e; \
@@ -84,10 +90,10 @@ tag:
 		echo "Flavor manifest mismatch"; \
 		exit 1; \
 	fi; \
-	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$(FLAVOR); \
-	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$$version; \
+	docker tag $(BUILDIMAGE) $(REGISTRY_TAG_PREFIX)$(NAME):$(FLAVOR); \
+	docker tag $(BUILDIMAGE) $(REGISTRY_TAG_PREFIX)$(NAME):$$version; \
 	if [ ! -z $$version_short ]; then \
-		docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$$version_short; \
+		docker tag $(BUILDIMAGE) $(REGISTRY_TAG_PREFIX)$(NAME):$$version_short; \
 	fi; \
 	}
 

@@ -2,11 +2,6 @@ stages:
   - build
   - deploy
 
-.only_changes: &changes_def
-    changes:
-      - Dockerfile
-      - Makefile
-      - tests/**/*   
 
 # ===================== 
 # Variables may be: 
@@ -27,7 +22,6 @@ stages:
     paths:
       - factory.manifest
   only:
-    <<: *changes_def
     refs:
       - schedules
   tags:
@@ -39,7 +33,7 @@ build:ltr:
     QGIS_FLAVOR: ltr
   only:
     variables:
-      - $BUILDTYPE== "releases"
+      - $BUILDTYPE == "releases"
 
 build:release:
   extends: .build
@@ -55,7 +49,7 @@ build:nightly-ltr:
     QGIS_FLAVOR: nightly-ltr
   only:
     variables:
-      - $BUILDTYPE== "nightlies"
+      - $BUILDTYPE == "nightlies"
 
 build:nightly-release:
   extends: .build
@@ -72,7 +66,7 @@ deploy:
     - $FACTORY_SCRIPTS/trigger-ci $PY_QGIS_WPS_ID $PY_QGIS_WPS_TOKEN master
   only:
     variables:
-      - $BUILDTYPE== "releases"
+      - $BUILDTYPE == "releases"
   tags:
     - infrav3
 
