@@ -64,6 +64,7 @@ deploy:
   script:
     - $FACTORY_SCRIPTS/trigger-ci $PY_QGIS_SERVER_ID $PY_QGIS_SERVER_TOKEN master
     - $FACTORY_SCRIPTS/trigger-ci $PY_QGIS_WPS_ID $PY_QGIS_WPS_TOKEN master
+    - $FACTORY_SCRIPTS/trigger-ci $PY_QGIS_WPS_ID $PY_QGIS_WPS_TOKEN qgis_release
   only:
     variables:
       - $BUILDTYPE == "releases"
