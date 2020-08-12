@@ -14,10 +14,10 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 \
     && dpkg-divert --local --rename --add /sbin/initctl \
     && apt-get update \
-    && apt-get install -y --no-install-recommends apt-transport-https ca-certificates dirmngr gnupg2 \
+    && apt-get install -y --no-install-recommends apt-transport-https ca-certificates dirmngr gnupg2 wget \
+    && wget -qO - https://qgis.org/downloads/qgis-2020.gpg.key | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/qgis-archive.gpg --import \
+    && chmod a+r /etc/apt/trusted.gpg.d/qgis-archive.gpg \
     && echo "deb https://qgis.org/$qgis_repository buster main" > /etc/apt/sources.list.d/qgis.list \
-    && gpg --no-tty --keyserver keyserver.ubuntu.com --recv 51F523511C7028C3 \
-    && gpg --no-tty --export --armor 51F523511C7028C3 | apt-key add - \
     && apt-get -y update  \
     && apt-get install -y --no-install-recommends python3-setuptools \
     && python3 -m easy_install pip \
@@ -33,6 +33,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
       python3-qgis \
       qgis-providers \
       qgis-server \
+    && apt-get -y purge wget \
     && apt-get clean && rm -rf /var/lib/apt/lists/* && rm -rf /usr/share/man \
     && rm -rf /root/.cache
 
