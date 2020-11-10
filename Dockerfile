@@ -14,6 +14,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 \
     && dpkg-divert --local --rename --add /sbin/initctl \
     && apt-get update \
+    && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends apt-transport-https ca-certificates dirmngr gnupg2 wget \
     && wget -qO - https://qgis.org/downloads/qgis-2020.gpg.key | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/qgis-archive.gpg --import \
     && chmod a+r /etc/apt/trusted.gpg.d/qgis-archive.gpg \
