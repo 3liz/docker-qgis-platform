@@ -34,9 +34,12 @@ RUN export DEBIAN_FRONTEND=noninteractive \
       python3-qgis \
       qgis-providers \
       qgis-server \
+    && wget http://ftp.de.debian.org/debian/pool/contrib/m/msttcorefonts/ttf-mscorefonts-installer_3.7_all.deb \
+    && apt-get install -y  ./ttf-mscorefonts-installer_3.7_all.deb \
     && apt-get -y purge wget \
     && apt-get clean && rm -rf /var/lib/apt/lists/* && rm -rf /usr/share/man \
-    && rm -rf /root/.cache
+    && rm -rf /root/.cache \
+    && rm -f ./ttf-mscorefonts-installer_3.7_all.deb
 
 # Use utf-8 for python 3
 ENV LC_ALL="C.UTF-8"
