@@ -63,13 +63,13 @@ deploy:
   stage: deploy
   script:
     - $FACTORY_SCRIPTS/trigger-ci $PY_QGIS_SERVER_ID $PY_QGIS_SERVER_TOKEN master
-    - $FACTORY_SCRIPTS/trigger-ci $PY_QGIS_SERVER_ID $PY_QGIS_SERVER_TOKEN 1.3.x 
+    - $FACTORY_SCRIPTS/trigger-ci $PY_QGIS_SERVER_ID $PY_QGIS_SERVER_TOKEN 1.5.x 
     - $FACTORY_SCRIPTS/trigger-ci $PY_QGIS_WPS_ID $PY_QGIS_WPS_TOKEN master
-    - $FACTORY_SCRIPTS/trigger-ci $PY_QGIS_WPS_ID $PY_QGIS_WPS_TOKEN 1.4.x
+    - $FACTORY_SCRIPTS/trigger-ci $PY_QGIS_WPS_ID $PY_QGIS_WPS_TOKEN 1.5.x
   only:
     variables:
       - $BUILDTYPE == "releases"
   tags:
-    - infrav3
+    - infrav3-plain
 
 

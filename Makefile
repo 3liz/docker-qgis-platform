@@ -20,16 +20,21 @@ COMMITID=$(shell git rev-parse --short HEAD)
 # 'ltr' is the default'
 FLAVOR:=ltr
 
+DISTRO:=debian
+
 ifeq ($(FLAVOR),nightly-release)
-BUILD_ARGS=--build-arg qgis_repository=debian-nightly-release
+BUILD_ARGS=--build-arg qgis_repository=$(DISTRO)-nightly-release
 else ifeq ($(FLAVOR),ltr)
-BUILD_ARGS=--build-arg qgis_repository=debian-ltr
+BUILD_ARGS=--build-arg qgis_repository=$(DISTRO)-ltr
 else ifeq ($(FLAVOR),nightly-ltr)
-BUILD_ARGS=--build-arg qgis_repository=debian-nightly-ltr
+BUILD_ARGS=--build-arg qgis_repository=$(DISTRO)-nightly-ltr
 else ifeq ($(FLAVOR),nightly)
-BUILD_ARGS=--build-arg qgis_repository=debian-nightly
-else ifneq ($(FLAVOR),release)
-$(error unsupported FLAVOR)
+BUILD_ARGS=--build-arg qgis_repository=$(DISTRO)-nightly
+else ifeq ($(FLAVOR),release)
+BUILD_ARGS=--build-arg qgis_repository=$(DISTRO)
+else
+BUILD_ARGS=--build-arg qgis_repository=$(DISTRO)-ltr
+BUILD_ARGS += --build-arg qgis_version=$(FLAVOR)
 endif
 
 ifdef REGISTRY_URL
@@ -37,11 +42,19 @@ REGISTRY_PREFIX=$(REGISTRY_URL)/
 BUILD_ARGS += --build-arg REGISTRY_PREFIX=$(REGISTRY_PREFIX)
 endif
 
-BUILDIMAGE=$(NAME):$(FLAVOR)-$(COMMITID)
+BUILDIMAGE=$(NAME):$(FLAVOR)-$(DISTRO)-$(COMMITID)
 
-TEST_FLAVOR:=$(FLAVOR)-$(COMMITID)
+TEST_FLAVOR:=$(FLAVOR)-$(DISTRO)-$(COMMITID)
 
 MANIFEST=factory.manifest
+
+ifndef REGISTRY_PREFIX
+REGISTRY_TAG_PREFIX:=3liz/
+else
+REGISTRY_TAG_PREFIX:=$(REGISTRY_PREFIX)
+endif
+
+DOCKERFILE=-f Dockerfile.$(DISTRO)
 
 all:
 	@echo "Usage: make [build|archive|deliver|clean]"
@@ -49,7 +62,8 @@ all:
 build: _build manifest
 
 _build:
-	docker build --rm --force-rm --no-cache $(BUILD_ARGS) -t $(BUILDIMAGE) $(DOCKERFILE) .
+	docker build --rm $(BUILD_ARGS) \
+		-t $(BUILDIMAGE) -t 3liz/$(NAME):$(FLAVOR)-$(DISTRO) $(DOCKERFILE) .
 
 manifest:
 	docker run --rm -v $$(pwd)/manifest.sh:/manifest -e FLAVOR=$(FLAVOR) \
@@ -75,12 +89,6 @@ test:
 
 
 deliver: tag push
-
-ifndef REGISTRY_PREFIX
-REGISTRY_TAG_PREFIX:=3liz/
-else
-REGISTRY_TAG_PREFIX:=$(REGISTRY_PREFIX)
-endif
 
 tag: 
 	@@{ \

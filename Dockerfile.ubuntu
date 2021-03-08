@@ -1,14 +1,23 @@
 # Need docker above v17-05.0-ce
 ARG REGISTRY_PREFIX=''
 
-FROM  ${REGISTRY_PREFIX}debian:buster-slim
+FROM  ${REGISTRY_PREFIX}ubuntu:20.04
 MAINTAINER David Marteau <david.marteau@3liz.com>
 LABEL Description="QGIS3 Server Framework" Vendor="3liz.org" Version="20.02.1"
 
 ENV DEBIAN_FRONTEND noninteractive
 
 # Use debian-nightly-release for nightly next release version
-ARG qgis_repository=debian
+ARG qgis_repository
+ARG qgis_version
+
+
+RUN if test "${qgis_version}" != ""; then (\
+        echo "Configuring Qgis version ${qgis_version} for ${qgis_repository}" \
+        && echo "Package: *qgis*" >> /etc/apt/preferences.d/qgis \
+        && echo "Pin: version ${qgis_version}.*" >> /etc/apt/preferences.d/qgis \
+        && echo "Pin-Priority: 1001" >> /etc/apt/preferences.d/qgis \
+    ); fi
 
 RUN export DEBIAN_FRONTEND=noninteractive \
     && export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 \
@@ -18,7 +27,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get install -y --no-install-recommends apt-transport-https ca-certificates dirmngr gnupg2 wget \
     && wget -qO - https://qgis.org/downloads/qgis-2020.gpg.key | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/qgis-archive.gpg --import \
     && chmod a+r /etc/apt/trusted.gpg.d/qgis-archive.gpg \
-    && echo "deb https://qgis.org/$qgis_repository buster main" > /etc/apt/sources.list.d/qgis.list \
+    && echo "deb https://qgis.org/$qgis_repository focal main" > /etc/apt/sources.list.d/qgis.list \
     && apt-get -y update  \
     && apt-get install -y --no-install-recommends python3-setuptools \
     && python3 -m easy_install pip \
@@ -34,23 +43,15 @@ RUN export DEBIAN_FRONTEND=noninteractive \
       python3-qgis \
       qgis-providers \
       qgis-server \
-    && wget http://ftp.de.debian.org/debian/pool/contrib/m/msttcorefonts/ttf-mscorefonts-installer_3.7_all.deb \
-    && apt-get install -y  ./ttf-mscorefonts-installer_3.7_all.deb \
     && apt-get -y purge wget \
     && apt-get clean && rm -rf /var/lib/apt/lists/* && rm -rf /usr/share/man \
-    && rm -rf /root/.cache \
-    && rm -f ./ttf-mscorefonts-installer_3.7_all.deb
+    && rm -rf /root/.cache
 
 # Use utf-8 for python 3
 ENV LC_ALL="C.UTF-8"
 
 ENV QGIS_DISABLE_MESSAGE_HOOKS=1
 ENV QGIS_NO_OVERRIDE_IMPORT=1
-
-# Backport 3.6 processing scripts
-# XXX To be removed when ltr switch to 3.6
-COPY script-backports /script-backports 
-RUN cd /script-backports && ./backport-scripts.sh 
 
 COPY qgis-check-platform /usr/local/bin/
 
