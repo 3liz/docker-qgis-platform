@@ -15,5 +15,12 @@ algorithm availables.
 
 GRASS and SAGA are not installed by default and should be installed in child images if needed.
 
+## Building image
 
+```
+make build tag clean FLAVOR=<FLAVOR> TARGET=<TARGET>
+```
+
+* Where `FLAVOR` is `ltr`,`release`,`nightly-ltr`,`nightly-release` or any X.YY version available as debian/ubuntu package.
+* Where `TARGET` is `debian` or `ubuntu`
 

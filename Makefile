@@ -20,20 +20,20 @@ COMMITID=$(shell git rev-parse --short HEAD)
 # 'ltr' is the default'
 FLAVOR:=ltr
 
-DISTRO:=debian
+TARGET:=debian
 
 ifeq ($(FLAVOR),nightly-release)
-BUILD_ARGS=--build-arg qgis_repository=$(DISTRO)-nightly-release
+BUILD_ARGS=--build-arg qgis_repository=$(TARGET)-nightly-release
 else ifeq ($(FLAVOR),ltr)
-BUILD_ARGS=--build-arg qgis_repository=$(DISTRO)-ltr
+BUILD_ARGS=--build-arg qgis_repository=$(TARGET)-ltr
 else ifeq ($(FLAVOR),nightly-ltr)
-BUILD_ARGS=--build-arg qgis_repository=$(DISTRO)-nightly-ltr
+BUILD_ARGS=--build-arg qgis_repository=$(TARGET)-nightly-ltr
 else ifeq ($(FLAVOR),nightly)
-BUILD_ARGS=--build-arg qgis_repository=$(DISTRO)-nightly
+BUILD_ARGS=--build-arg qgis_repository=$(TARGET)-nightly
 else ifeq ($(FLAVOR),release)
-BUILD_ARGS=--build-arg qgis_repository=$(DISTRO)
+BUILD_ARGS=--build-arg qgis_repository=$(TARGET)
 else
-BUILD_ARGS=--build-arg qgis_repository=$(DISTRO)-ltr
+BUILD_ARGS=--build-arg qgis_repository=$(TARGET)-ltr
 BUILD_ARGS += --build-arg qgis_version=$(FLAVOR)
 endif
 
@@ -42,9 +42,9 @@ REGISTRY_PREFIX=$(REGISTRY_URL)/
 BUILD_ARGS += --build-arg REGISTRY_PREFIX=$(REGISTRY_PREFIX)
 endif
 
-BUILDIMAGE=$(NAME):$(FLAVOR)-$(DISTRO)-$(COMMITID)
+BUILDIMAGE=$(NAME):$(FLAVOR)-$(TARGET)-$(COMMITID)
 
-TEST_FLAVOR:=$(FLAVOR)-$(DISTRO)-$(COMMITID)
+TEST_FLAVOR:=$(FLAVOR)-$(TARGET)-$(COMMITID)
 
 MANIFEST=factory.manifest
 
@@ -54,7 +54,7 @@ else
 REGISTRY_TAG_PREFIX:=$(REGISTRY_PREFIX)
 endif
 
-DOCKERFILE=-f Dockerfile.$(DISTRO)
+DOCKERFILE=-f Dockerfile.$(TARGET)
 
 all:
 	@echo "Usage: make [build|archive|deliver|clean]"
@@ -63,7 +63,7 @@ build: _build manifest
 
 _build:
 	docker build --rm $(BUILD_ARGS) \
-		-t $(BUILDIMAGE) -t 3liz/$(NAME):$(FLAVOR)-$(DISTRO) $(DOCKERFILE) .
+		-t $(BUILDIMAGE) -t 3liz/$(NAME):$(FLAVOR)-$(TARGET) $(DOCKERFILE) .
 
 manifest:
 	docker run --rm -v $$(pwd)/manifest.sh:/manifest -e FLAVOR=$(FLAVOR) \
