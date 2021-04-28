@@ -2,7 +2,7 @@ ARG REGISTRY_PREFIX=''
 
 FROM  ${REGISTRY_PREFIX}debian:buster-slim
 MAINTAINER David Marteau <david.marteau@3liz.com>
-LABEL Description="QGIS3 Server Framework" Vendor="3liz.org" Version="20.02.1"
+LABEL Description="QGIS3 Server Framework" Vendor="3liz.org" Version="20.04.0"
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -55,10 +55,8 @@ ENV LC_ALL="C.UTF-8"
 ENV QGIS_DISABLE_MESSAGE_HOOKS=1
 ENV QGIS_NO_OVERRIDE_IMPORT=1
 
-# Backport 3.6 processing scripts
-# XXX To be removed when ltr switch to 3.6
-COPY script-backports /script-backports 
-RUN cd /script-backports && ./backport-scripts.sh 
+# Apply patches
+COPY patches/processing/tools/system.py /usr/share/qgis/python/plugins/processing/tools/system.py
 
 COPY qgis-check-platform /usr/local/bin/
 

@@ -3,7 +3,7 @@ ARG REGISTRY_PREFIX=''
 
 FROM  ${REGISTRY_PREFIX}ubuntu:20.04
 MAINTAINER David Marteau <david.marteau@3liz.com>
-LABEL Description="QGIS3 Server Framework" Vendor="3liz.org" Version="20.02.1"
+LABEL Description="QGIS3 Server Framework" Vendor="3liz.org" Version="20.04.0"
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -29,10 +29,8 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && chmod a+r /etc/apt/trusted.gpg.d/qgis-archive.gpg \
     && echo "deb https://qgis.org/$qgis_repository focal main" > /etc/apt/sources.list.d/qgis.list \
     && apt-get -y update  \
-    && apt-get install -y --no-install-recommends python3-setuptools \
-    && python3 -m easy_install pip \
-    && apt-get remove -y python3-setuptools \
-    && pip3 install setuptools wheel \
+    && apt-get install -y --no-install-recommends python3-pip python3-setuptools \
+    && pip3 install wheel \
     && apt-get install -y --no-install-recommends \
       unzip \
       gosu \
@@ -53,5 +51,9 @@ ENV LC_ALL="C.UTF-8"
 ENV QGIS_DISABLE_MESSAGE_HOOKS=1
 ENV QGIS_NO_OVERRIDE_IMPORT=1
 
+# Apply patches
+COPY patches/processing/tools/system.py /usr/share/qgis/python/plugins/processing/tools/system.py
+
 COPY qgis-check-platform /usr/local/bin/
+
 
