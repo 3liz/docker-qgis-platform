@@ -20,7 +20,7 @@ COMMITID=$(shell git rev-parse --short HEAD)
 # 'ltr' is the default'
 FLAVOR:=ltr
 
-TARGET:=debian
+TARGET:=ubuntu
 
 ifeq ($(FLAVOR),nightly-release)
 BUILD_ARGS=--build-arg qgis_repository=$(TARGET)-nightly-release

@@ -1,4 +1,4 @@
-# Need docker above v17-05.0-ce
+# vim: ft=dockerfile
 ARG REGISTRY_PREFIX=''
 
 FROM  ${REGISTRY_PREFIX}ubuntu:20.04
