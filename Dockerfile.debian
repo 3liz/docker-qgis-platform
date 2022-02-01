@@ -29,16 +29,13 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && chmod a+r /etc/apt/trusted.gpg.d/qgis-archive.gpg \
     && echo "deb https://qgis.org/$qgis_repository buster main" > /etc/apt/sources.list.d/qgis.list \
     && apt-get -y update  \
-    && apt-get install -y --no-install-recommends python3-setuptools \
-    && python3 -m easy_install pip \
-    && apt-get remove -y python3-setuptools \
-    && pip3 install setuptools wheel \
     && apt-get install -y --no-install-recommends \
       unzip \
       gosu \
       iputils-ping \
       xvfb \
       libgl1-mesa-dri \
+      python3-venv \
       python3-psutil \
       python3-qgis \
       qgis-providers \

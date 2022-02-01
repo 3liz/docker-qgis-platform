@@ -30,8 +30,8 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && chmod a+r /etc/apt/trusted.gpg.d/qgis-archive.gpg \
     && echo "deb https://qgis.org/$qgis_repository focal main" > /etc/apt/sources.list.d/qgis.list \
     && apt-get -y update  \
-    && apt-get install -y --no-install-recommends python3-pip python3-setuptools \
-    && pip3 install wheel \
+    && apt-get install -y --no-install-recommends \
+        python3-venv \
     && apt-get install -y --no-install-recommends \
       unzip \
       gosu \
